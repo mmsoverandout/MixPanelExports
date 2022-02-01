@@ -1,0 +1,66 @@
+import requests
+import time
+import json
+import pandas as pd
+from datetime import datetime
+from datetime import timedelta
+from datetime import date
+from mixpanel_api import Mixpanel
+import urllib2 
+
+
+
+api_secret = '' #Put the API Secret between the quotes
+project_token = '' #Put the project token here
+
+# from_date and to_date format = yyyy-mm-dd
+# limit -> data export limit
+# url = "https://data.mixpanel.com/api/2.0/export?from_date=2021-09-21&to_date=2021-09-24&limit=10000"
+
+url1 = "https://data.mixpanel.com/api/2.0/export?from_date="
+url2 = "&to_date="
+url3 = "&limit=100000"
+
+headers_thinkific = {
+    "Accept": "text/plain",
+    "Authorization": "Basic YjU5MDI2ZDFjMTQ2MDg0NjRhZDI3MjY1MDAzNzI2ZWE6"
+}
+
+headers_com = {
+    "Accept": "text/plain",
+    "Authorization": "Basic NjJiODRkNzA0YTkyNWZlOTMxYzNiYmI4NTdhNjliNjM6"
+}
+
+headers_spayee = {
+    "Accept": "text/plain",
+    "Authorization": "Basic NjhiY2M2ZTg0MDA2YjYzNmQ1ZWYwM2IxYmJmOTQ3ZDA6"
+}
+
+begin_date_string = "2021-11-18"
+begin_date = datetime.strptime(begin_date_string, "%Y-%m-%d")
+print("Beginning Date - ",begin_date.date())
+
+
+k=0
+
+for i in range(16):
+    from_date = begin_date + timedelta(days=k)
+    to_date = begin_date + timedelta(days=k+1)
+    k=k+2
+    from_date_str = str(from_date.date())
+    to_date_str = str(to_date.date())
+    print(from_date_str,"-",to_date_str)
+    
+    url_fin = url1 + from_date_str + url2 + to_date_str + url3
+    
+    response = requests.request("GET", url_fin, headers=headers_com)
+    
+    file_name = str(from_date_str) + "_" + str(to_date_str) +".json"
+    file = open(file_name,'w')
+    file.write(response.text)
+    file.close()
+    
+    
+    
+    
+    
